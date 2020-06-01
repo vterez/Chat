@@ -1,0 +1,2 @@
+all:
+	g++ -std=c++17 main.cpp -o servidor -DSFML_STATIC -I D:\ProgrammingStuff\SFMLStatic\SFMLFinal\include -L D:\ProgrammingStuff\SFMLStatic\SFMLFinal\lib -lsfml-graphics-s -lsfml-window-s -lsfml-audio-s -lsfml-network-s -lsfml-system-s -lopengl32 -lwinmm -lgdi32 -lfreetype -ljpeg  -lopenal32 -lflac -lvorbisenc -lvorbisfile -lvorbis -logg -lws2_32

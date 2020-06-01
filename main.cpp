@@ -276,7 +276,6 @@ void checasocket()
             pacote2>>n;
             novocliente->nome=n;
             clientes[id]=std::move(novocliente);
-            wcout<<L"entrou o "<<id<<L" de nome:"<<clientes[id]->nome<<endl;
             trava.unlock();
             return;
         }

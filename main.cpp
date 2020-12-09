@@ -18,12 +18,12 @@ unsigned short porta = 1000;
 TcpListener novaconexao;
 SocketSelector atividade;
 atomic<bool> running=true;
-int maximo=0;
+int maximo=1;
 std::mutex trava;
 
 int novo_id()
 {
-    for(int i=0; i<maximo; i++)
+    for(int i=1; i<maximo; i++)
     {
         if(ids.find(i)==ids.end())
         {
@@ -89,7 +89,7 @@ bool arrumapacote(Packet &pacotein,Packet &pacoteout,int id)
     {
         //texto
         wstring s;
-        int linhas;
+        int linhas,p_enter;
         pacotein>>dest>>conhecido;
         auto itenvio=clientes.find(dest);
         if(itenvio==clientes.end())
@@ -104,9 +104,11 @@ bool arrumapacote(Packet &pacotein,Packet &pacoteout,int id)
             clientes[id]->soquete.send(pct);
             std::wcout<<L"enviou o nome:"<<clientes[dest]->nome<<endl;
         }
-        pacotein>>linhas>>s;
+        int resp;
+        pacotein>>linhas>>s>>p_enter>>resp;
         pacoteout<<tipo<<id;
-        pacoteout<<linhas<<s;
+        pacoteout<<linhas<<s<<p_enter<<resp;
+        std::wcout<<L"resp="<<resp<<std::endl;
         itenvio->second->soquete.send(pacoteout);
         return 1;
         break;
@@ -140,8 +142,9 @@ bool arrumapacote(Packet &pacotein,Packet &pacoteout,int id)
             pacoteout<<sample;
         }
         std::wstring s;
-        pacotein>>s;
-        pacoteout<<s;
+		int resp;
+        pacotein>>s>>resp;
+        pacoteout<<s<<resp;
 
         itenvio->second->soquete.send(pacoteout);
         return 1;
@@ -175,7 +178,9 @@ bool arrumapacote(Packet &pacotein,Packet &pacoteout,int id)
             pacotein>>in;
             pacoteout<<in;
         }
-
+        int resp;
+        pacotein>>resp;
+        pacoteout<<resp;
         itenvio->second->soquete.send(pacoteout);
         return 1;
         break;
@@ -202,7 +207,7 @@ bool arrumapacote(Packet &pacotein,Packet &pacoteout,int id)
         int offset;
         float x,y;
         wstring s;
-        int linhas;
+        int linhas,resp,p_enter;
         pacotein>>offset>>tam>>x>>y;
         pacoteout<<offset<<tam<<x<<y;
         for(sf::Uint64 i=0; i<tam; i++)
@@ -210,8 +215,8 @@ bool arrumapacote(Packet &pacotein,Packet &pacoteout,int id)
             pacotein>>in;
             pacoteout<<in;
         }
-        pacotein>>linhas>>s;
-        pacoteout<<linhas<<s;
+        pacotein>>linhas>>s>>p_enter>>resp;
+        pacoteout<<linhas<<s<<p_enter<<resp;
 
         itenvio->second->soquete.send(pacoteout);
         return 1;
